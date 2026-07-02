@@ -466,3 +466,19 @@ Add this task after your Docker Build task:
       $(tag)
 
 Here, containerRegistry refers to your Azure DevOps Service Connection, not the ACR name.
+
+
+
+
+
+`You never run az acr login inside the pipeline.`
+
+Why?
+
+Because the Azure Service Connection automatically authenticates the Docker task with ACR.
+
+This is a very common interview question.
+
+Interview Answer:
+
+"In Azure Pipelines, we don't manually execute az acr login. The Docker@2 task uses the Azure Resource Manager service connection to authenticate with Azure Container Registry securely."
