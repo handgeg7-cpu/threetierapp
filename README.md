@@ -325,3 +325,71 @@ So it must execute:
 npm install
 
 to download all required packages.
+
+
+
+Interview Questions
+Q1: Why do we install Node.js if it's already available on the agent?
+
+Answer:
+
+We specify the Node.js version to ensure consistent builds across developer machines and CI environments. This avoids version-related issues.
+
+Q2: Why run npm install in the pipeline?
+
+Answer:
+
+The build agent is temporary and starts without project dependencies. Running npm install downloads the required packages from package.json before building or testing the application.
+
+
+Step 1 - Add Variables
+
+Update your variables section.
+
+Replace it with something like this (use your actual service connection name):
+
+variables:
+  imageRepository: backend
+  dockerfilePath: backend/Dockerfile
+  containerRegistry: threetierpp
+  serviceConnection: Your-Service-Connection-Name
+  tag: $(Build.BuildId)
+
+⚠️ Replace Your-Service-Connection-Name with the exact name of the Azure Service Connection you created.
+
+Step 2 - Build the Docker Image
+
+Add this after the npm install step.
+
+- task: Docker@2
+  displayName: 'Build Backend Image'
+  inputs:
+    command: build
+    repository: $(imageRepository)
+    dockerfile: $(dockerfilePath)
+    tags: |
+      $(tag)
+Let's Test Before Pushing
+
+Notice that we are NOT pushing to ACR yet.
+
+This is intentional.
+
+In a real project we verify one step at a time:
+
+Checkout      ✅
+Install        ✅
+Docker Build   ← Test this first
+Docker Push    ← Add after build succeeds
+Why Not Build and Push Together?
+
+Suppose the build fails.
+
+If both steps are combined, you don't immediately know whether the problem is:
+
+Dockerfile
+Docker build context
+Image tagging
+ACR authentication
+
+By testing the build first, troubleshooting is much easier.

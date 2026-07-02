@@ -6,11 +6,12 @@ pool:
                                 #Everything happens on this temporary build agent.
 
 variables:                                        #we use variables so they can be reused throughout the pipeline.
-        imageRepository: backend
-        dockerfilePath: backend/Dockerfile
-        tag: $(Build.BuildId)
-
-        steps:
+      imageRepository: backend
+      dockerfilePath: backend/Dockerfile
+      containerRegistry: threetierpp
+      serviceConnection: Your-Service-Connection-Name
+      tag: $(Build.BuildId)
+      steps:
           - checkout: self
           
           - script: |                   
@@ -27,3 +28,11 @@ variables:                                        #we use variables so they can 
                       cd backend
                       npm install
                       displayName: 'Install Backend Dependencies'
+          - task: Docker@2
+            displayName: 'Build Backend Image'
+            inputs:
+                          command: build
+                          repository: $(imageRepository)
+                          dockerfile: $(dockerfilePath)
+                          tags: |
+                          $(tag)
