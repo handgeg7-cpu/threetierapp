@@ -12,7 +12,7 @@ docker compose up --build
 ```
 
 Then open:
-- http://localhost:8080
+- http://localhost:9090
 - http://localhost:3001/health
 
 ## DevOps-friendly structure
