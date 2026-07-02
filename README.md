@@ -189,3 +189,76 @@ Before you start, you should collect the following information.
 | Azure Container Registry Name | Cloud Team                 | ✅ `threetierpp`        |
 | Azure Service Connection Name | DevOps                     | ✅ (you created it)     |
 | Branch to trigger             | Team Decision              | ✅ `main`               |
+
+
+
+
+------------------------------------------------------------------------------
+
+
+trigger:  
+ - main    # when someone pushes to main branch this pipeline will be triggered automatically.
+
+pool:  
+    vmImage: 'ubuntu-latest'    # azure devops creates a temporary virtual machine with ubntu_latest image to run the pipeline.
+                                #Everything happens on this temporary build agent.
+
+variables:                                        #we use variables so they can be reused throughout the pipeline.
+        imageRepository: backend
+        dockerfilePath: backend/Dockerfile
+        tag: $(Build.BuildId)
+
+
+----------------------------------------------------------------------------------
+above 
+Story
+
+The developers have completed the backend application.
+
+Your manager says:
+
+"Ganesh, create a CI pipeline that automatically builds the backend Docker image whenever code is merged into the main branch."
+
+
+let's do next
+
+Interview Question
+
+Q: Why do we use #checkout: self?
+
+Answer:
+
+It downloads the source code from the current Azure Repos repository to the build agent so that subsequent steps like npm install, Docker build, and testing can access the project files.
+
+
+
+Step 2 - Verify Repository
+
+Before installing anything, we always verify that the repository was downloaded correctly.
+
+Add:
+
+- script: |
+    pwd
+    ls -R
+  displayName: 'Verify Repository'
+
+  
+
+  ``
+  `Why?`
+
+Imagine your Docker build fails.
+
+The first question you'll ask is:
+
+"Did the repository actually get downloaded?"
+
+This step prints:
+
+Current directory
+All folders and files
+
+This is extremely useful while developing a pipeline.
+
+Many engineers remove this step later, but it's great during pipeline creation.

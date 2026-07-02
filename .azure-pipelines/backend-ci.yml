@@ -10,4 +10,10 @@ variables:                                        #we use variables so they can 
         dockerfilePath: backend/Dockerfile
         tag: $(Build.BuildId)
 
-
+        steps:
+          - checkout: self
+          
+          - script: |                   
+                    pwd
+                    ls -R
+                    displayName: 'Verify Repository'        Before installing anything, we always verify that the repository was downloaded correctly.
