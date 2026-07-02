@@ -1,49 +1,49 @@
-trigger:  
- - main    # when someone pushes to main branch this pipeline will be triggered automatically.
+trigger:
+- main
 
-pool:  
-    vmImage: 'ubuntu-latest'    # azure devops creates a temporary virtual machine with ubntu_latest image to run the pipeline.
-                                #Everything happens on this temporary build agent.
+pool:
+  vmImage: 'ubuntu-latest'
 
-variables:                                        #we use variables so they can be reused throughout the pipeline.
-      imageRepository: backend
-      dockerfilePath: backend/Dockerfile
-      containerRegistry: threetierpp
-      serviceConnection: Your-Service-Connection-Name
-      tag: $(Build.BuildId)
-      steps:
-          - checkout: self
-          
-          - script: |                   
-                    pwd
-                    ls -R
-                    displayName: 'Verify Repository'        Before installing anything, we always verify that the repository was downloaded correctly.
+variables:
+  imageRepository: backend
+  dockerfilePath: backend/Dockerfile
+  containerRegistry: threetierpp
+  serviceConnection: threetierapp
+  tag: $(Build.BuildId)
 
-          - task: NodeTool@0                    #The Microsoft-hosted agent has Node installed, but we explicitly specify the version.
-            inputs:
-                      versionSpec: '18.x'
-                      displayName: 'Install Node.js'
+steps:
 
-          - script: |
-                      cd backend
-                      npm install
-                      displayName: 'Install Backend Dependencies'
-          - task: Docker@2
-            displayName: 'Build Backend Image'
-            inputs:
-                          command: build
-                          repository: $(imageRepository)
-                          dockerfile: $(dockerfilePath)
-                          tags: |
-                                 $(tag)
-          - task: Docker@2
-            displayName: 'Push Backend Image to ACR'
-            inputs:
-                    command: push
-                    repository: $(imageRepository)
-                    containerRegistry: 'threetierapp'
-                    tags: |
-                            $(tag)
+- checkout: self
 
-        
-        
+- script: |
+    pwd
+    ls -R
+  displayName: 'Verify Repository'
+
+- task: NodeTool@0
+  displayName: 'Install Node.js'
+  inputs:
+    versionSpec: '18.x'
+
+- script: |
+    cd backend
+    npm install
+  displayName: 'Install Backend Dependencies'
+
+- task: Docker@2
+  displayName: 'Build Backend Image'
+  inputs:
+    command: build
+    repository: $(imageRepository)
+    dockerfile: $(dockerfilePath)
+    tags: |
+      $(tag)
+
+- task: Docker@2
+  displayName: 'Push Backend Image to ACR'
+  inputs:
+    command: push
+    repository: $(imageRepository)
+    containerRegistry: $(serviceConnection)
+    tags: |
+      $(tag)
