@@ -162,3 +162,30 @@ Azure-ServiceConnection
 Grant access permission to all pipelines.
 
 Click Save.
+
+
+🎯 `Ticket-5 (Current)`
+User Story
+
+As a DevOps Engineer, I want every commit to the main branch to automatically build my backend Docker image and push it to Azure Container Registry.
+
+
+
+Before Writing YAML
+
+A DevOps engineer doesn't start by writing YAML. First, they gather information.
+
+Imagine your Team Lead asks:
+
+"Ganesh, create the CI pipeline."
+
+Before you start, you should collect the following information.
+
+| Information                   | Who Provides It?           | Status                 |
+| ----------------------------- | -------------------------- | ---------------------- |
+| Azure Repos Repository        | SCM Team / Already created | ✅                      |
+| Backend Folder                | Developer                  | ✅ `backend/`           |
+| Dockerfile Location           | Developer                  | ✅ `backend/Dockerfile` |
+| Azure Container Registry Name | Cloud Team                 | ✅ `threetierpp`        |
+| Azure Service Connection Name | DevOps                     | ✅ (you created it)     |
+| Branch to trigger             | Team Decision              | ✅ `main`               |
