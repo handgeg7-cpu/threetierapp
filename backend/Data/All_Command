@@ -6,3 +6,11 @@ docker compose up --build
 
 for checking the logs of the containers, you can use the following command:
 docker compose logs -f
+
+After Code check completed I will push code to github.
+ git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin <your-repo-url>
+git push -u origin main 
