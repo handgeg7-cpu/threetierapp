@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Three-Tier Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="panel">
+        <h1>Three-Tier Application</h1>
+        <p>This frontend calls a backend API and stores data through a database tier.</p>
+
+        <form id="item-form">
+          <input id="name" name="name" placeholder="Item name" required />
+          <textarea id="description" name="description" placeholder="Description" required></textarea>
+          <button type="submit">Add item</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Items</h2>
+        <div id="status">Loading items...</div>
+        <ul id="item-list"></ul>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

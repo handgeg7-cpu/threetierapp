@@ -1,0 +1,8 @@
+docker compose up -d 
+docker build -t product-service:v1 .
+
+docker compose down -v
+docker compose up --build
+
+for checking the logs of the containers, you can use the following command:
+docker compose logs -f

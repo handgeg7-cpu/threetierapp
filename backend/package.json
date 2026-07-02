@@ -1,0 +1,13 @@
+{
+  "name": "three-tier-backend",
+  "version": "1.0.0",
+  "description": "Simple backend for a three-tier application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "pg": "^8.2.0"
+  }
+}
