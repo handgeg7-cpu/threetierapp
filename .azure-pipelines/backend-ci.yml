@@ -5,45 +5,69 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  imageRepository: backend
-  dockerfilePath: backend/Dockerfile
-  containerRegistry: threetierpp
-  serviceConnection: threetierapp
-  tag: $(Build.BuildId)
+  imageRepository: 'backend'
+  dockerfilePath: 'backend/Dockerfile'
+  containerRegistry: 'threetierpp'
+  serviceConnection: 'threetierapp'
+  tag: '$(Build.BuildId)'
 
 steps:
 
+# Checkout Source Code
 - checkout: self
 
+# Verify Repository
 - script: |
     pwd
     ls -R
   displayName: 'Verify Repository'
 
+# Install Node.js
 - task: NodeTool@0
   displayName: 'Install Node.js'
   inputs:
     versionSpec: '18.x'
 
+# Install Backend Dependencies
 - script: |
     cd backend
     npm install
   displayName: 'Install Backend Dependencies'
 
+# Build Docker Image
 - task: Docker@2
   displayName: 'Build Backend Image'
   inputs:
-    command: build
-    repository: $(imageRepository)
-    dockerfile: $(dockerfilePath)
+    command: 'build'
+    repository: '$(imageRepository)'
+    dockerfile: '$(dockerfilePath)'
     tags: |
       $(tag)
+      latest
 
-- task: Docker@2
-  displayName: 'Push Backend Image to ACR'
+# Login to Azure and ACR
+- task: AzureCLI@2
+  displayName: 'Login to Azure Container Registry'
   inputs:
-    command: push
-    repository: $(imageRepository)
-    containerRegistry: $(serviceConnection)
-    tags: |
-      $(tag)
+    azureSubscription: '$(serviceConnection)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az acr login --name $(containerRegistry)
+
+# Verify Docker Images
+- script: |
+    docker images
+  displayName: 'Verify Docker Image'
+
+# Tag Docker Image
+- script: |
+    docker tag $(imageRepository):$(tag) $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
+    docker tag $(imageRepository):latest $(containerRegistry).azurecr.io/$(imageRepository):latest
+  displayName: 'Tag Docker Image'
+
+# Push Docker Image
+- script: |
+    docker push $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
+    docker push $(containerRegistry).azurecr.io/$(imageRepository):latest
+  displayName: 'Push Docker Image to ACR'
