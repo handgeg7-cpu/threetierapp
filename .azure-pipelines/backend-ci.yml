@@ -17,3 +17,13 @@ variables:                                        #we use variables so they can 
                     pwd
                     ls -R
                     displayName: 'Verify Repository'        Before installing anything, we always verify that the repository was downloaded correctly.
+
+          - task: NodeTool@0                    #The Microsoft-hosted agent has Node installed, but we explicitly specify the version.
+            inputs:
+                      versionSpec: '18.x'
+                      displayName: 'Install Node.js'
+
+          - script: |
+                      cd backend
+                      npm install
+                      displayName: 'Install Backend Dependencies'

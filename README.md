@@ -262,3 +262,66 @@ All folders and files
 This is extremely useful while developing a pipeline.
 
 Many engineers remove this step later, but it's great during pipeline creation.
+
+`Ticket-7`
+Story
+
+Your manager says:
+
+"The repository is checked out successfully. Now install the backend dependencies so the application is ready for building and testing."
+
+
+
+Step 1 - Install Node.js
+
+Add this after your repository verification step.
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
+  `Why?`
+
+The Microsoft-hosted agent has Node installed, but we explicitly specify the version.
+
+This ensures every pipeline uses the same Node.js version.
+
+Example:
+
+Developer Laptop → Node 20
+QA Pipeline → Node 20
+Production Build → Node 20
+
+Consistency prevents "works on my machine" problems.
+
+
+Step 2 - Install Dependencies
+
+Now install the backend packages.
+
+- script: |
+    cd backend
+    npm install
+  displayName: 'Install Backend Dependencies'
+
+
+  Why?
+
+When Azure creates the build agent:
+
+backend/
+
+package.json
+
+NO node_modules
+
+There is no node_modules folder.
+
+The pipeline downloads only your source code.
+
+So it must execute:
+
+npm install
+
+to download all required packages.
