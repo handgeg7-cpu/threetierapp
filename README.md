@@ -393,3 +393,76 @@ Image tagging
 ACR authentication
 
 By testing the build first, troubleshooting is much easier.
+
+
+=--=-===========================================================================
+
+
+
+The answer is:
+
+Only on the Azure Pipeline agent.
+
+When the pipeline finishes, Microsoft destroys that temporary VM.
+
+Azure Hosted Agent
+
+Docker Image
+     │
+     ▼
+Pipeline Finished
+     │
+     ▼
+VM Destroyed ❌
+Image Lost ❌
+
+So although the image was built successfully, it is not available for deployment.
+`
+`Next Ticket (Ticket-9)`
+Story
+
+Your manager says:
+
+"The Docker image is being built successfully. Now store it in Azure Container Registry so AKS can use it later."
+
+This is why we created ACR earlier.
+
+The flow becomes:
+
+Developer
+      │
+      ▼
+Azure Repos
+      │
+      ▼
+Azure Pipeline
+      │
+      ▼
+Docker Build
+      │
+      ▼
+Push Image to ACR
+      │
+      ▼
+Image Stored Securely
+
+
+
+
+
+``
+🚀 `Ticket-9: Push Docker Image to ACR`
+
+Now we are completing the CI pipeline.
+
+Add this task after your Docker Build task:
+- task: Docker@2
+  displayName: 'Push Backend Image to ACR'
+  inputs:
+    command: push
+    repository: $(imageRepository)
+    containerRegistry: 'threetierapp'
+    tags: |
+      $(tag)
+
+Here, containerRegistry refers to your Azure DevOps Service Connection, not the ACR name.

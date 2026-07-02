@@ -35,4 +35,14 @@ variables:                                        #we use variables so they can 
                           repository: $(imageRepository)
                           dockerfile: $(dockerfilePath)
                           tags: |
-                          $(tag)
+                                 $(tag)
+          - task: Docker@2
+            displayName: 'Push Backend Image to ACR'
+            inputs:
+                    command: push
+                    repository: $(imageRepository)
+                    containerRegistry: 'threetierapp'
+                    tags: |
+                            $(tag)
+
+        
