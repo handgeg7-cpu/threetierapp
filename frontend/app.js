@@ -1,6 +1,4 @@
-const API_URL = window.location.hostname === "localhost"
-  ? "http://localhost:3001"
-  : "http://backend:3001";
+const API_URL = "http://52.224.91.15:3001";
 
 const form = document.getElementById("item-form");
 const itemList = document.getElementById("item-list");
