@@ -20,7 +20,7 @@ spec:
     spec: 
       containers:
         - name: backend
-          image: threetierpp.azurecr.io/backend:25
+          image: threetierpp.azurecr.io/backend:latest
           ports:
             - containerPort: 3001
           env:

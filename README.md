@@ -524,3 +524,438 @@ This is a very common interview question.
 Interview Answer:
 
 "In Azure Pipelines, we don't manually execute az acr login. The Docker@2 task uses the Azure Resource Manager service connection to authenticate with Azure Container Registry securely."
+
+
+
+
+`What You Have Successfully Completed`
+Local Development
+✅ Docker Compose
+✅ Frontend
+✅ Backend
+✅ PostgreSQL
+✅ Application working locally
+Azure
+✅ Resource Group
+✅ Azure Container Registry
+✅ Service Connection
+Azure DevOps
+
+From your pipeline screenshot, I can see these stages completed successfully:
+
+✅ Checkout Repository
+✅ Verify Repository
+✅ Install Node.js
+✅ Install Backend Dependencies
+✅ Build Backend Image
+✅ Login to Azure Container Registry
+✅ Verify Docker Image
+✅ Tag Docker Image
+✅ Push Docker Image to ACR
+
+
+
+
+================================================================================
+
+Now We creating kubernetes cluster 
+
+with UI as where In 
+    Required resource group
+    required size pool 
+    Container registory 
+
+    after creating cluster we have to i have get credention because without that 
+
+    What does az aks get-credentials do?
+`az aks get-credentials --resource-group rg-three-tier-dev --name threetierapp --overwrite-existing`
+
+This command:
+
+Downloads the cluster credentials.
+Updates your local ~/.kube/config (or %USERPROFILE%\.kube\config on Windows).
+Sets the current context to your AKS cluster.
+
+
+🏢 Real Company Scenario
+
+Imagine the developer sends you this message:
+
+"The backend has been deployed successfully. The Pods are running and the application is healthy. Please expose the backend so that other applications inside the cluster can communicate with it."
+
+As a DevOps engineer, your next task is not another Deployment.
+
+`Now We need to create service`
+
+Why Do We Need a Service?
+
+Right now your architecture looks like this:
+
+                 Backend Deployment
+                        │
+                        ▼
+                  ReplicaSet
+                        │
+            ┌───────────┴───────────┐
+            ▼                       ▼
+        Backend Pod 1          Backend Pod 2
+
+Each Pod has its own IP.
+
+Example:
+
+Pod 1 → 10.244.1.12
+Pod 2 → 10.244.1.20
+
+If Pod 1 crashes:
+10.244.1.12 ❌
+
+New Pod
+10.244.1.35 ✅
+
+The IP changes.
+This is why applications should never communicate directly with Pod IPs.
+
+
+
+`Why ClusterIP?`
+
+Because this backend is not accessed by users.
+
+It is only accessed by:
+
+Frontend
+Other microservices
+
+Inside the cluster.
+
+Architecture:
+
+Internet
+
+      ❌
+
+Frontend
+
+      │
+
+backend-service
+
+      │
+
+Backend Pods
+
+This is the correct enterprise design.
+
+
+command invole in op
+>> kubectl apply -f service.yml
+>>kubectl get svc 
+>> kubectl describe svc backend-service
+>>kubectl get endpoints
+
+
+`what is use of endpoint in what case i need to check endpoints"`
+Answer:
+
+
+after service.yml deploy 
+
+PS C:\Users\ganes\three-tier-app\kubernetes> kubectl get endpoints
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME              ENDPOINTS                            AGE
+backend-service   10.244.0.93:3001,10.244.1.178:3001   115s
+kubernetes        52.150.49.116:443                    3h43m
+PS C:\Users\ganes\three-tier-app\kubernetes> 
+
+
+`MOST IMPORTANET`
+
+First Understand the Architecture
+
+Suppose you have:
+
+Deployment
+      │
+      ▼
+ReplicaSet
+      │
+      ▼
+Pod 1 (10.244.1.10)
+Pod 2 (10.244.1.11)
+
+Now you create a Service.
+
+backend-service
+      │
+      ▼
+?????
+
+How does the Service know where your Pods are?
+
+Answer: Through Endpoints.
+
+What is an Endpoint?
+
+An Endpoint is simply the list of Pod IP addresses that a Service forwards traffic to.
+
+Example:
+
+Service: backend-service
+
+Endpoints:
+
+10.244.1.10:3001
+10.244.1.11:3001
+
+This means:
+
+When someone sends a request to:
+
+backend-service:3001
+
+Kubernetes forwards it to either:
+
+10.244.1.10:3001
+
+or
+
+10.244.1.11:3001
+Visual Diagram
+          Client Pod
+               │
+               ▼
+      backend-service
+        (ClusterIP)
+               │
+      ┌────────┴────────┐
+      ▼                 ▼
+10.244.1.10       10.244.1.11
+ Backend Pod      Backend Pod
+
+Notice something important:
+
+The Service does not directly know about Deployments.
+
+It only knows about the Endpoints.
+
+How Are Endpoints Created?
+
+You wrote:
+
+selector:
+  app: backend
+
+Your Pods have:
+
+labels:
+  app: backend
+
+Kubernetes automatically matches them.
+
+Service Selector
+
+app=backend
+
+        │
+
+Find Pods
+
+app=backend
+
+        │
+
+Create Endpoints
+
+You don't create Endpoints manually in normal situations.
+
+When Should You Check Endpoints?
+
+This is the important part.
+
+Case 1 - Service Not Working ⭐⭐⭐⭐⭐
+
+Suppose:
+
+kubectl get pods
+
+Running
+
+Everything looks healthy.
+
+But:
+
+backend-service
+
+not working
+
+The first thing I check is:
+
+kubectl get endpoints
+
+Suppose it shows:
+
+backend-service
+
+<none>
+
+Immediately I know:
+
+👉 The Service cannot find any Pods.
+
+Usually because:
+
+Wrong labels
+Wrong selector
+Case 2 - Application Not Accessible
+
+Example:
+
+Frontend
+
+↓
+
+backend-service
+
+↓
+
+404
+
+I check:
+
+kubectl describe svc backend-service
+
+If I see:
+
+Endpoints:
+
+<none>
+
+I know the Service has nothing to forward traffic to.
+
+Case 3 - Pods Running but No Traffic
+
+Imagine:
+
+kubectl get pods
+
+Running
+
+But:
+
+curl backend-service
+
+Connection refused
+
+Again:
+
+kubectl get endpoints
+
+Maybe:
+
+backend-service
+
+<none>
+
+Problem found.
+
+Case 4 - Rolling Update
+
+Suppose Deployment creates a new Pod.
+
+Old:
+
+10.244.1.10
+
+New:
+
+10.244.1.25
+
+You don't update the Service.
+
+Kubernetes automatically updates the Endpoints.
+
+Before
+
+10.244.1.10
+
+↓
+
+After
+
+10.244.1.25
+
+This is one reason Services work so well with Deployments.
+
+Real Production Example
+
+Imagine your company receives an alert:
+
+"Frontend cannot communicate with Backend."
+
+My troubleshooting steps would be:
+
+Step 1
+
+kubectl get pods
+
+↓
+
+Pods Running?
+
+↓
+
+YES
+
+↓
+
+Step 2
+
+kubectl get svc
+
+↓
+
+Service Exists?
+
+↓
+
+YES
+
+↓
+
+Step 3
+
+kubectl get endpoints
+
+↓
+
+Endpoints Present?
+
+↓
+
+NO
+
+↓
+
+Check labels/selectors
+
+This is exactly how many Kubernetes issues are diagnosed.
+
+Commands Every DevOps Engineer Uses
+Check Services
+kubectl get svc
+Check Endpoints
+kubectl get endpoints
+Detailed Service Information
+kubectl describe svc backend-service
+Verify Labels
+kubectl get pods --show-labels
+Interview Question
+
+Interviewer:
+
+"What are Kubernetes Endpoints?"
+
+A strong answer:
+
+"Endpoints are the Pod IP addresses associated with a Kubernetes Service. A Service uses its selector to discover matching Pods, and Kubernetes automatically creates and updates the Endpoints object. The Service routes traffic to those Endpoint IPs. During troubleshooting, I check Endpoints to verify that the Service has discovered the correct Pods."
