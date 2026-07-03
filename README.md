@@ -5,6 +5,45 @@ This project demonstrates a simple three-tier architecture:
 - Backend: Node.js API service
 - Database: PostgreSQL
 
+
+
+Our Architecture
+              Git Repository
+                      │
+                      ▼
+              Docker Compose
+      ┌─────────────┼─────────────┐
+      ▼             ▼             ▼
+   Frontend      Backend      PostgreSQL
+    (Nginx)      (App)           (DB)
+                      │
+                      ▼
+               Local Testing ✅
+                      │
+                      ▼
+          Azure DevOps Pipeline
+                      │
+                      ▼
+             Build Docker Images
+                      │
+                      ▼
+      Push Images to Azure Container Registry
+                      │
+                      ▼
+          Terraform creates Azure Infra
+                      │
+                      ▼
+               Azure Kubernetes Service
+                      │
+                      ▼
+                 Helm Deployment
+                      │
+                      ▼
+                    ArgoCD
+                      │
+                      ▼
+        Prometheus + Grafana + Azure Monitor
+
 ## Run locally
 
 ```bash
@@ -68,10 +107,10 @@ First 1) I have creaed source code
             with help of login server provide in azure after creating acr
 
             acr login server is like :
-                    threetierapp.azurcr.io    = (containername with .azureapp.azurecr.io )   is common.
+                    threetierapp.azurcr.io    = (containername with .azurecr.io )   is common.
 
                     we can login to acr with command
-
+      >>az acr login --name threetierpp
                     View Repositories
 
             You can see what images are stored.
@@ -86,7 +125,7 @@ In Azure, we use Azure Container Registry (ACR).`
 
 
 
-for CI pipeline i need a docker images and that docker i need to store somewhere so that the reason we need to create ACR
+for CI pipeline i need a docker images and that docker images i need to store somewhere so that the reason we need to create ACR
 
     "In a CI pipeline, after the application code is built, we create a Docker image. That image needs to be stored in a central and secure registry so that deployment environments like AKS can pull the exact same image. In Azure, we use Azure Container Registry (ACR) for this purpose."
 
@@ -105,10 +144,13 @@ Create Azure resources
 Deploy to AKS
 
 
+Output >>  az acr repository list --name threetierpp --output table     
+
 
 `Why do we need a Service Connection?`
 
 Think of it like this.
+
 
 Currently:
 
