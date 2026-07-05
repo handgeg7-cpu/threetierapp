@@ -18,10 +18,11 @@ spec:
       labels:
         app: frontend
 
+
     spec:
       containers:
         - name: frontend
-          image: threetierpp.azurecr.io/frontend:v1
+          image: threetierapp.azurecr.io/frontend:v5
 
           ports:
             - containerPort: 80

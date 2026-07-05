@@ -959,3 +959,89 @@ Interviewer:
 A strong answer:
 
 "Endpoints are the Pod IP addresses associated with a Kubernetes Service. A Service uses its selector to discover matching Pods, and Kubernetes automatically creates and updates the Endpoints object. The Service routes traffic to those Endpoint IPs. During troubleshooting, I check Endpoints to verify that the Service has discovered the correct Pods."
+
+
+
+====================================================================================================================================
+o why need to replace with older credential if it is same as exting piepline and resources
+
+That's an excellent question. The key point is that it's not just the cluster name that matters—it's the underlying credentials and certificates.
+
+Case 1: Same cluster, nothing changed
+
+Suppose you created an AKS cluster once and never deleted it.
+
+AKS Cluster
+Name: threetierapp
+
+You run:
+
+az aks get-credentials --resource-group rg-three-tier-dev --name threetierapp
+
+again.
+
+In this case, the credentials are usually the same, so you don't need --overwrite-existing. Running it again doesn't hurt, but it isn't necessary.
+
+Case 2: Cluster was deleted and recreated (your recent scenario)
+
+Yesterday:
+
+AKS Cluster
+Name: threetierapp
+
+You deleted it.
+
+Today you created another cluster with the same name:
+
+AKS Cluster
+Name: threetierapp
+
+Although the name is identical, it's a different cluster internally.
+
+It has:
+
+A new cluster certificate.
+A new API server.
+New authentication credentials.
+
+Your local kubeconfig still contains the old credentials. If you don't overwrite them, kubectl may try to use stale information and fail to connect or authenticate correctly.
+
+Why is --overwrite-existing commonly used?
+
+It's mainly for automation.
+
+Imagine an Azure DevOps pipeline or a deployment script. You don't know whether the build agent or machine already has credentials for that cluster.
+
+Using:
+
+az aks get-credentials --resource-group rg-three-tier-dev --name threetierapp --overwrite-existing
+
+guarantees:
+
+No interactive prompt.
+The kubeconfig is updated with the latest credentials.
+The script works every time.
+In your current project
+
+If:
+
+you did not delete and recreate the cluster,
+you're using the same AKS cluster,
+and your kubectl commands already work,
+
+then you could simply run:
+
+az aks get-credentials --resource-group rg-three-tier-dev --name threetierapp
+
+without --overwrite-existing.
+
+Interview answer
+
+If an interviewer asks:
+
+Why do we use --overwrite-existing?
+
+A good answer is:
+
+"It's used to automatically replace an existing kubeconfig entry for the same cluster name. This is especially useful when a cluster has been recreated or when running automation and CI/CD pipelines, because it avoids interactive prompts and ensures kubectl always uses the latest cluster credentials."
+==================================================================================================================================

@@ -1,4 +1,4 @@
-const API_URL = "http://52.224.91.15:3001";
+const API_URL = "http://4.156.243.78:3001";
 
 const form = document.getElementById("item-form");
 const itemList = document.getElementById("item-list");
