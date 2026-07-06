@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: threetierapp.azurecr.io/frontend:v1
+          image: threetierapp.azurecr.io:$(Build.BuildId)
 
           ports:
             - containerPort: 80

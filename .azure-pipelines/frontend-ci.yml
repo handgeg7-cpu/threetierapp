@@ -1,0 +1,90 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  imageRepository: 'frontend'
+  dockerfilePath: 'frontend/Dockerfile'
+  containerRegistry: 'threetierapp'
+  serviceConnection: 'threetierapp'
+  tag: '$(Build.BuildId)'
+
+steps:
+
+# Checkout Source Code
+- checkout: self
+
+# Verify Repository
+- script: |
+    echo "Current Directory:"
+    pwd
+
+    echo "Repository Structure:"
+    ls -R
+  displayName: 'Verify Repository'
+
+# Install Node.js
+- task: NodeTool@0
+  displayName: 'Install Node.js'
+  inputs:
+    versionSpec: '18.x'
+
+# Install Frontend Dependencies
+- script: |
+    cd frontend
+    npm ci
+  displayName: 'Install Frontend Dependencies'
+
+# Build Docker Image
+- task: Docker@2
+  displayName: 'Build Frontend Docker Image'
+  inputs:
+    command: build
+    repository: '$(imageRepository)'
+    dockerfile: '$(dockerfilePath)'
+    tags: |
+      $(tag)
+      latest
+
+# Login to Azure & ACR
+- task: AzureCLI@2
+  displayName: 'Login to Azure Container Registry'
+  inputs:
+    azureSubscription: '$(serviceConnection)'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az acr login --name $(containerRegistry)
+
+# Verify Docker Images
+- script: |
+    docker images
+  displayName: 'Verify Docker Images'
+
+# Tag Images
+- script: |
+    docker tag $(imageRepository):$(tag) $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
+    docker tag $(imageRepository):latest $(containerRegistry).azurecr.io/$(imageRepository):latest
+  displayName: 'Tag Docker Images'
+
+# Push Images to ACR
+- script: |
+    docker push $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
+    docker push $(containerRegistry).azurecr.io/$(imageRepository):latest
+  displayName: 'Push Docker Images to ACR'
+
+# Verify Images in ACR
+- task: AzureCLI@2
+  displayName: 'Verify Images in ACR'
+  inputs:
+    azureSubscription: '$(serviceConnection)'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      echo "Images available in ACR:"
+      az acr repository show-tags \
+        --name $(containerRegistry) \
+        --repository $(imageRepository) \
+        --output table
