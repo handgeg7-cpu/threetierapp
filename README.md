@@ -1045,3 +1045,24 @@ A good answer is:
 
 "It's used to automatically replace an existing kubeconfig entry for the same cluster name. This is especially useful when a cluster has been recreated or when running automation and CI/CD pipelines, because it avoids interactive prompts and ensures kubectl always uses the latest cluster credentials."
 ==================================================================================================================================
+
+
+Remember this interview point
+
+There are three different things:
+
+Docker Image
+      │
+      ▼
+Docker Container (Created)
+      │
+      ▼
+Docker Container (Running)
+
+Commands:
+
+docker stop → Stops the running container.
+docker rm → Removes the container.
+docker rmi → Removes the image.
+
+An image cannot be deleted if any container (running or stopped) still references it.
