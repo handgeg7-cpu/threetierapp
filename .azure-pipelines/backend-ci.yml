@@ -15,8 +15,7 @@ variables:
   containerRegistry: 'threeierapp'
   serviceConnection: 'threetierapp'
   tag: '$(Build.BuildId)'
-
-
+  
 steps:
 
 # Checkout Source Code
