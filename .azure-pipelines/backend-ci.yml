@@ -27,8 +27,6 @@ steps:
     pwd
     ls -R
   displayName: 'Verify Repository'
-
-
   
 # Install Node.js
 - task: NodeTool@0
