@@ -5,7 +5,6 @@ trigger:
   paths:
     include:
       - backend/*
-      - .azure-pipelines/backend-ci.yml
 
 
 pool:
