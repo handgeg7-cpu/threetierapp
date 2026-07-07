@@ -31,11 +31,7 @@ steps:
   inputs:
     versionSpec: '18.x'
 
-# Install Frontend Dependencies
-- script: |
-    cd frontend
-    npm ci
-  displayName: 'Install Frontend Dependencies'
+
 
 # Build Docker Image
 - task: Docker@2
