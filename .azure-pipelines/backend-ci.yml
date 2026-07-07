@@ -67,6 +67,7 @@ steps:
     docker images
   displayName: 'Verify Docker Image'
 
+
 # Tag Docker Image
 - script: |
     docker tag $(imageRepository):$(tag) $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
