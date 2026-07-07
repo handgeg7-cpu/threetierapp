@@ -1,4 +1,7 @@
-trigger: none
+trigger: 
+  branches:
+    include:
+      - .azure-pipelines/deploy-aks.yml
 
 pool:
   vmImage: 'ubuntu-latest'
