@@ -7,7 +7,7 @@ pool:
 variables:
   imageRepository: 'frontend'
   dockerfilePath: 'frontend/Dockerfile'
-  containerRegistry: 'threetierapp'
+  containerRegistry: 'threeierapp'
   serviceConnection: 'threetierapp'
   tag: '$(Build.BuildId)'
 
