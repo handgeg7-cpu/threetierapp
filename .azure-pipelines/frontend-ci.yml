@@ -4,7 +4,8 @@ trigger:
       - main
   paths:
     include:
-      - frontend/*- .azure-pipelines/frontend-ci.yml
+      - frontend/*-
+      - .azure-pipelines/frontend-ci.yml
 
       
 pool:
