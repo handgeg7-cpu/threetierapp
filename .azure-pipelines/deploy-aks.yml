@@ -19,7 +19,12 @@ steps:
     kubernetesServiceConnection: 'aks-connection'
     namespace: default
     manifests: |
+      kubernetes/postgres-deployment.yml
+      kubernetes/postgres-service.yml
       kubernetes/Deployment.yaml
+      kubernetes/backend-service.yml
+      kubernetes/frontend-deployment.yaml
+      kubernetes/frontend-service.yaml
     
     #containers: |
       #threetierapp.azurecr.io/backend:$(Build.BuildId)
