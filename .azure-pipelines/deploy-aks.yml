@@ -1,6 +1,10 @@
 trigger: 
   branches:
     include:
+      - main
+
+  paths:
+    include:
       - .azure-pipelines/deploy-aks.yml
 
 pool:
