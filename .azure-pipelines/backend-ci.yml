@@ -6,7 +6,6 @@ trigger:
     include:
       - backend/*
 
-
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -16,6 +15,7 @@ variables:
   containerRegistry: 'threeierapp'
   serviceConnection: 'threetierapp'
   tag: '$(Build.BuildId)'
+
 
 steps:
 
