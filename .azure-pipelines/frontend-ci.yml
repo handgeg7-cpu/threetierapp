@@ -6,9 +6,7 @@ trigger:
     include:
       - frontend/*-
       - .azure-pipelines/frontend-ci.yml
-      - .azure-pipelines/frontend-ci.yml
-
-      
+    
 pool:
   vmImage: 'ubuntu-latest'
 
