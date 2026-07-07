@@ -13,3 +13,5 @@ steps:
     namespace: default
     manifests: |
       kubernetes/Deployment.yaml
+    #containers: |
+      #threetierapp.azurecr.io/backend:$(Build.BuildId)

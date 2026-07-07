@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: threetierapp.azurecr.io/frontend:latest
+          image: threeierapp.azurecr.io/frontend:latest
 
           ports:
             - containerPort: 80
