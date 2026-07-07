@@ -5,7 +5,6 @@ trigger:
   paths:
     include:
       - frontend/*
-
       
 pool:
   vmImage: 'ubuntu-latest'
