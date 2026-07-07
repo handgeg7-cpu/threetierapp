@@ -6,6 +6,7 @@ trigger:
     include:
       - backend/*
 
+
 pool:
   vmImage: 'ubuntu-latest'
 
