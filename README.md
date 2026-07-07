@@ -1072,3 +1072,112 @@ What you have achieved
 If this were an interview, you can now confidently say:
 
 "I built a production-style three-tier application on Azure Kubernetes Service. I created CI pipelines for the frontend and backend to build Docker images and push them to Azure Container Registry. I then created a deployment pipeline that deploys PostgreSQL, backend, frontend, and their services to AKS. The application runs with multiple replicas behind Kubernetes Services and uses ACR for container images."
+
+
+
+
+==========================================================================================================
+
+What is the Release?
+
+The Release is your installed instance of that chart.
+
+Think of Microsoft Word.
+
+You can install Microsoft Office on:
+
+Laptop A
+Laptop B
+Laptop C
+
+Same software.
+
+Different installations.
+
+Helm works the same way.
+
+Example:
+
+helm install ingress-nginx ingress-nginx/ingress-nginx
+
+Release Name:
+
+ingress-nginx
+
+Later you could even install another one:
+
+helm install internal-ingress ingress-nginx/ingress-nginx
+
+Now you have:
+
+Release 1
+ingress-nginx
+
+Release 2
+internal-ingress
+
+Same chart.
+
+Different releases.
+
+========================================================================================================
+
+
+
+Interview Tip
+
+If an interviewer asks:
+
+"Is Helm only for applications?"
+
+You can answer:
+
+"No. Helm is also used by cloud providers like AKS to install and manage cluster add-ons. For example, AKS installs several managed components as Helm releases in the kube-system namespace."
+
+That's a senior-level observation.
+
+======================================================================================================================
+
+Interview Question
+
+An interviewer may ask:
+
+Why do we install Ingress in a separate namespace?
+
+A good answer is:
+
+"Ingress is a shared infrastructure component. Multiple applications use the same Ingress Controller, so it's installed in its own namespace for isolation, easier upgrades, RBAC, monitoring, and lifecycle management."
+
+
+=============================================================================================================================
+Interview Question
+
+An interviewer might ask:
+
+Why should backend-service be ClusterIP when using Ingress?
+
+A good answer is:
+
+"Ingress is the single external entry point into the cluster. Backend services are internal components and don't need public IPs. Exposing them through LoadBalancers increases cost and the attack surface. With Ingress, backend services are typically ClusterIP."
+
+==============================================================================================================================
+
+One thing I want to point out
+
+You also saw another service:
+
+ingress-nginx-controller-admission
+ClusterIP
+443
+
+Many people ignore this, but it's important.
+
+This is the Admission Webhook Service.
+
+Its job is to validate your Ingress objects before Kubernetes accepts them.
+
+For example, if you accidentally write an invalid ingress.yaml, the admission webhook can reject it before it reaches the cluster.
+
+This is one of the reasons the official NGINX Ingress Helm chart installs several resources, not just a controller pod.
+
+===========================================================================================================================
