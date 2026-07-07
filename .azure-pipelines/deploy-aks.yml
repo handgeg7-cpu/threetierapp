@@ -1,1 +1,15 @@
 trigger: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+
+- task: KubernetesManifest@1
+  displayName: 'Deploy Backend'
+  inputs:
+    action: deploy
+    kubernetesServiceConnection: 'aks-connection'
+    namespace: default
+    manifests: |
+      kubernetes/Deployment.yaml
