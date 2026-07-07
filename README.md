@@ -1066,3 +1066,9 @@ docker rm → Removes the container.
 docker rmi → Removes the image.
 
 An image cannot be deleted if any container (running or stopped) still references it.
+
+What you have achieved
+
+If this were an interview, you can now confidently say:
+
+"I built a production-style three-tier application on Azure Kubernetes Service. I created CI pipelines for the frontend and backend to build Docker images and push them to Azure Container Registry. I then created a deployment pipeline that deploys PostgreSQL, backend, frontend, and their services to AKS. The application runs with multiple replicas behind Kubernetes Services and uses ACR for container images."
