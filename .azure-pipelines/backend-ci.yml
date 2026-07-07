@@ -6,6 +6,7 @@ trigger:
     include:
       - backend/*
       - .azure-pipelines/backend-ci.yml
+      - .azure-pipelines/backend-ci.yml
 
 pool:
   vmImage: 'ubuntu-latest'
