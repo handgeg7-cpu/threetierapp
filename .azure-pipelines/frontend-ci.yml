@@ -4,7 +4,8 @@ trigger:
       - main
   paths:
     include:
-      - frontend/*
+      - frontend/*- .azure-pipelines/frontend-ci.yml
+
       
 pool:
   vmImage: 'ubuntu-latest'
