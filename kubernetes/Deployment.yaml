@@ -20,7 +20,7 @@ spec:
     spec: 
       containers:
         - name: backend
-          image: threeierapp.azurecr.io/backend:latest
+          image: threetier.azurecr.io/backend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3001
