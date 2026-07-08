@@ -6,6 +6,8 @@ trigger:
   paths:
     include:
       - .azure-pipelines/deploy-aks.yml
+      - .azure-pipelines/deploy-aks.yml
+      - Deployment.yaml
 
 
 pool:
