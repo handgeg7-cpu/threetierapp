@@ -16,7 +16,7 @@ pod Login command -
 Enter in pod
 >> printenv
 
-
+>>kubectl rollout status deployment/backend-deployment
 
 
 Your Backend Pod
