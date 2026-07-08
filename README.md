@@ -1293,3 +1293,120 @@ Data
 PORT:
 ----
 3001
+
+
+Why not store the port in a Secret?
+
+Because the application port is not confidential. Anyone deploying or troubleshooting the application needs to know which port it listens on. Using a Secret for non-sensitive values adds unnecessary complexity without improving security.
+
+
+
+
+There are two different units here:
+
+requests:
+  cpu: "100m"
+  memory: "128Mi"
+
+They mean completely different things.
+
+CPU: 100m
+
+Here, m means millicores, not megabytes.
+
+1000m = 1 CPU Core
+
+Examples:
+
+Value	Meaning
+1000m	1 CPU Core
+500m	0.5 CPU Core
+250m	0.25 CPU Core
+100m	0.1 CPU Core
+50m	0.05 CPU Core
+
+So:
+
+cpu: "100m"
+
+means:
+
+Reserve 10% of one CPU core.
+
+If your AKS node has 2 vCPUs, then:
+
+Total CPU = 2000m
+
+Backend Request = 100m
+
+Remaining = 1900m
+Memory: 128Mi
+
+Here, Mi means Mebibytes, not Megabytes (MB).
+
+Kubernetes uses binary units.
+
+Unit	Value
+1Ki	1024 Bytes
+1Mi	1024 Ki = 1,048,576 Bytes
+1Gi	1024 Mi
+
+Examples:
+
+memory: "128Mi"
+
+means approximately:
+
+128 Mi ≈ 134 MB
+
+Another example:
+
+memory: "512Mi"
+
+is approximately:
+
+512 Mi ≈ 536 MB
+Why Mi instead of MB?
+
+There are two standards.
+
+Decimal (used by hard disk manufacturers)
+1 MB = 1,000,000 Bytes
+Binary (used by Linux/Kubernetes)
+1 Mi = 1,048,576 Bytes
+
+That's why Kubernetes uses:
+
+Ki
+Mi
+Gi
+
+instead of:
+
+KB
+MB
+GB
+Easy way to remember
+CPU
+m = millicore
+1000m = 1 Core
+Memory
+Mi = Mebibyte
+1024Mi = 1Gi
+Interview Question
+
+Interviewer:
+
+What does 100m CPU mean?
+
+Good answer:
+
+m stands for millicore. 1000m equals one CPU core, so 100m means the container requests 0.1 CPU core.
+
+Interviewer:
+
+What does 128Mi memory mean?
+
+Good answer:
+
+Mi stands for Mebibyte, which is a binary memory unit used by Kubernetes. 128Mi is approximately 128 MB of memory, and Kubernetes uses Ki, Mi, and Gi instead of KB, MB, and GB.
