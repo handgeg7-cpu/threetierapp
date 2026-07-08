@@ -1456,3 +1456,16 @@ The pod stays running but won't receive requests until it's ready again.
 3. Startup Probe
 Used for applications that take a long time to start.
 For your project, we'll focus on Liveness and Readiness.
+
+
+This is an interview story now
+
+If an interviewer asks:
+
+Tell me about a challenging Kubernetes issue you solved.
+
+You can answer:
+
+"While adding persistent storage for PostgreSQL on AKS, my pod entered CrashLoopBackOff. I checked kubectl describe pod and then kubectl logs --previous. The logs showed that PostgreSQL couldn't initialize because the mounted Azure Disk contained a lost+found directory. I fixed it by configuring the PGDATA environment variable to use a subdirectory (/var/lib/postgresql/data/pgdata). After redeploying, the pod started successfully. I verified persistence by creating data, deleting the PostgreSQL pod, and confirming the data remained after the new pod came up."
+
+That is a real production-level troubleshooting example.
