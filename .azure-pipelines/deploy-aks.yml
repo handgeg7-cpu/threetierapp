@@ -7,7 +7,7 @@ trigger:
     include:
       - .azure-pipelines/deploy-aks.yml
 
-      
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -23,6 +23,7 @@ steps:
       kubernetes/postgres-deployment.yml
       kubernetes/postgres-service.yml
       kubernetes/Deployment.yaml
+      ingress/ingress.yaml
       kubernetes/backend-service.yml
       kubernetes/frontend-deployment.yaml
       kubernetes/frontend-service.yaml

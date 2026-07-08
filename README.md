@@ -1181,3 +1181,81 @@ For example, if you accidentally write an invalid ingress.yaml, the admission we
 This is one of the reasons the official NGINX Ingress Helm chart installs several resources, not just a controller pod.
 
 ===========================================================================================================================
+
+
+Our Plan
+Phase 3.1 - Kubernetes Secrets (Learning)
+
+We'll learn:
+
+✅ What is a Secret?
+✅ How to create a Secret
+✅ How to view a Secret
+✅ How Secrets are stored
+✅ How to consume a Secret as an environment variable
+✅ How to verify it's working
+
+After that, we'll replace it with Azure Key Vault in a later phase.
+==================================================================================================================================
+
+
+How does the Pod read it?
+
+Your Deployment contains:
+
+env:
+- name: DATABASE_URL
+  valueFrom:
+    secretKeyRef:
+      name: backend-secret
+      key: DATABASE_URL
+
+During Pod creation, Kubernetes performs this process:
+
+Pod Starting
+      │
+      ▼
+Find Secret
+backend-secret
+      │
+      ▼
+Read key
+DATABASE_URL
+      │
+      ▼
+Decode Base64
+      │
+      ▼
+Inject as Environment Variable
+      │
+      ▼
+Container Starts
+
+Inside the container:
+
+printenv
+
+you'll see:
+
+DATABASE_URL=postgres://postgres:postgres@db:5432/appdb
+
+Notice that your application never sees the Base64 value. Kubernetes decodes it before injecting it.
+
+
+
+=========================================================================================================
+
+
+AKS Cluster
+│
+├── Node (VM)
+│     │
+│     ├── Container Runtime (containerd)
+│     │      │
+│     │      ├── Pod
+│     │      │     │
+│     │      │     ├── Container 1
+│     │      │     ├── Container 2 (optional)
+│     │      │
+│     │      ├── Pod
+│     │      │     └── Container
