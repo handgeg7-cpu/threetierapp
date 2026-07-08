@@ -9,7 +9,7 @@ trigger:
       - .azure-pipelines/deploy-aks.yml
       -  Deployment.yaml
 
-      
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -22,6 +22,7 @@ steps:
     kubernetesServiceConnection: 'aks-connection'
     namespace: default
     manifests: |
+      kubernetes/postgres-pvc.yml
       kubernetes/postgres-deployment.yml
       kubernetes/postgres-service.yml
       kubernetes/Deployment.yaml
