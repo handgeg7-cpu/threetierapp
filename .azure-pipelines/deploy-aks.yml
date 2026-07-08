@@ -7,7 +7,7 @@ trigger:
     include:
       - .azure-pipelines/deploy-aks.yml
       - .azure-pipelines/deploy-aks.yml
-      - Deployment.yaml
+      -  Deployment.yaml
 
 
 pool:
