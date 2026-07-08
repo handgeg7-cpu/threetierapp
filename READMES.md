@@ -18,6 +18,8 @@ Enter in pod
 
 >>kubectl rollout status deployment/backend-deployment
 
+Port Forward
+>> kubectl port forward svc/backend-service 3001:3001
 
 Your Backend Pod
 

@@ -1410,3 +1410,49 @@ What does 128Mi memory mean?
 Good answer:
 
 Mi stands for Mebibyte, which is a binary memory unit used by Kubernetes. 128Mi is approximately 128 MB of memory, and Kubernetes uses Ki, Mi, and Gi instead of KB, MB, and GB.
+
+
+
+Next Phase: Liveness & Readiness Probes
+
+This is one of the most frequently asked Kubernetes interview topics.
+
+Why do we need them?
+
+Imagine this scenario:
+
+User
+   │
+   ▼
+Backend Pod
+
+The pod status is:
+
+Running ✅
+
+But your Node.js application has crashed internally or is stuck.
+
+Kubernetes only knows:
+
+"The container is running."
+
+It doesn't know whether your application is actually healthy.
+
+That's where probes help.
+
+Three types of probes
+1. Liveness Probe
+Question Kubernetes asks:
+"Is the application alive?"
+If No:
+Restart the container
+2. Readiness Probe
+Question Kubernetes asks:
+"Can this pod receive traffic?"
+If No:
+Remove it from the Service endpoints.
+The pod stays running but won't receive requests until it's ready again.
+
+3. Startup Probe
+Used for applications that take a long time to start.
+For your project, we'll focus on Liveness and Readiness.
