@@ -9,7 +9,6 @@ trigger:
       - .azure-pipelines/deploy-aks.yml
       -  Deployment.yaml
    
-      
 pool:
   vmImage: 'ubuntu-latest'
 
