@@ -1259,3 +1259,37 @@ AKS Cluster
 │     │      │
 │     │      ├── Pod
 │     │      │     └── Container
+
+
+
+
+
+Step 1 – Create a ConfigMap
+
+Run this command:
+
+kubectl create configmap backend-config --from-literal=PORT=3001
+Step 2 – Verify it
+
+Run:
+
+kubectl get configmap
+
+Expected:
+
+NAME               DATA
+backend-config     1
+
+Then:
+
+kubectl describe configmap backend-config
+
+You should see:
+
+Name:         backend-config
+
+Data
+====
+PORT:
+----
+3001
